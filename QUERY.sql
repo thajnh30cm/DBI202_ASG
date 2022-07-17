@@ -78,9 +78,15 @@ FROM
 	FROM Student) as st  INNER JOIN [Join] ON st.StudentID = [Join].StudentID
 			 INNER JOIN Enroll ON Enroll.GroupID = [Join].GroupID
 			 INNER JOIN Class ON Enroll.ClassID = Class.ClassID
+WHERE Semester = 'SPR22'
 
+--o   A query that uses a sub-query in the WHERE clause: xem trạng thái của sinh viên ở lớp học có ID = 2
+SELECT J.StudentID, CONCAT([Last Name], ' ', [First Name]) AS [Student Name], ClassID, Average, [PASS]
+FROM 
+	Student INNER JOIN [Join] AS J ON Student.StudentID = J.StudentID 
+			 INNER JOIN [Contact] AS C ON J.StudentID = C.StudentID
+WHERE ClassID = (SELECT ClassID FROM Class WHERE ClassID = '2')
 
---o   A query that uses a sub-query in the WHERE clause
 
 --o   A query that uses partial matching in the WHERE clause: xem trạng thái của sinh viên ở lớp học có ID = 2
 SELECT J.StudentID, CONCAT([Last Name], ' ', [First Name]) AS [Student Name], ClassID, Average, [PASS]
@@ -98,11 +104,6 @@ SELECT a.[First Name]+ ' '+ a.[Last Name]
 FROM Student a, Student b 
 WHERE YEAR(a.DoB) > YEAR(b.DoB)
 	
-
-
-
-
-
 -- Xem thông tin khoá học 'CSD202' của Sinh Viên HE000
 SELECT  Acess.CourseID, cl.Semester, Enroll.GroupID, cl.[Start Date], cl.[End Date], co.Average, co.PASS
 FROM 
@@ -113,3 +114,9 @@ FROM
 WHERE st.StudentID = 'HE000'
 GROUP BY CourseID, Semester, GroupID,cl.[Start Date], cl.[End Date], co.Average, co.PASS
 HAVING CourseID='CSD202'
+
+-- Xem các đầu điểm của một môn học (CSD202)
+SELECT CourseID, [Category Name], [Weight], Duration, [Type], [Pass Condition]
+FROM 
+	[Assessment System] ass INNER JOIN Category c ON ass.CategoryID = c.CategoryID
+WHERE ass.CourseID = 'CSD202'
